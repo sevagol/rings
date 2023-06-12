@@ -52,6 +52,9 @@
     const captureButton = document.getElementById('capture-button');
     const predictionText = document.getElementById('prediction-text');
 
+    // Добавляем названия классов
+    const classes = ['class1', 'class2', 'class3'];
+
     let model;
     let stream;
     let videoWidth, videoHeight;
@@ -78,7 +81,6 @@
       model = await tf.loadLayersModel('model.json');
     }
 
-    // Изменяем имя функции для большей ясности
     function captureAndClassifyImage() {
       captureImage = true;
     }
@@ -102,20 +104,17 @@
 
         console.log('Predictions:', predictions);
 
-        const topPrediction = Array.from(predictions).map((p, i) => ({
-          probability: p,
-          className: model.outputLayers[0].classes[i]
-        })).sort((a, b) => b.probability - a.probability)[0];
+        const maxPredictionIndex = predictions.indexOf(Math.max(...predictions));
 
         // Выводим предсказания на экран
-        predictionText.textContent = `Predicted class: ${topPrediction.className} with probability of ${topPrediction.probability.toFixed(2)}`;
+        predictionText.textContent = `Predicted class: ${classes[maxPredictionIndex]}, Value: ${predictions[maxPredictionIndex].toFixed(2)}`;
       }
 
       requestAnimationFrame(classifyFrame);
     }
 
     cameraButton.addEventListener('click', enableCamera);
-    captureButton.addEventListener('click', captureAndClassifyImage); // Изменяем имя функции на более подходящее
+    captureButton.addEventListener('click', captureAndClassifyImage);
   </script>
 </body>
 </html>
