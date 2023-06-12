@@ -99,18 +99,4 @@
         const topPrediction = Array.from(predictions).map((p, i) => ({
           probability: p,
           className: model.outputLayers[0].classes[i]
-        })).sort((a, b) => b.probability - a.probability)[0];
-
-        predictionText.textContent = `Predicted class: ${topPrediction.className}`;
-
-        // Perform further processing or display predictions in the UI
-      }
-
-      requestAnimationFrame(classifyFrame);
-    }
-
-    cameraButton.addEventListener('click', enableCamera);
-    captureButton.addEventListener('click', captureImageFrame);
-  </script>
-</body>
-</html>
+        })).sort((a, b) => b.probability - a.prob
