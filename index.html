@@ -61,21 +61,26 @@
     let captureImage = false;
 
     async function enableCamera() {
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        videoElement.srcObject = stream;
-        await videoElement.play();
-        videoWidth = videoElement.videoWidth;
-        videoHeight = videoElement.videoHeight;
-        cameraButton.disabled = true;
-        captureButton.disabled = false;
+  try {
+    // Указываем, что хотим использовать заднюю камеру
+    const constraints = {
+      video: { facingMode: "environment" }
+    };
 
-        await loadModel();
-        classifyFrame();
-      } catch (error) {
-        console.error('Error accessing the camera:', error);
-      }
-    }
+    stream = await navigator.mediaDevices.getUserMedia(constraints);
+    videoElement.srcObject = stream;
+    await videoElement.play();
+    videoWidth = videoElement.videoWidth;
+    videoHeight = videoElement.videoHeight;
+    cameraButton.disabled = true;
+    captureButton.disabled = false;
+
+    await loadModel();
+    classifyFrame();
+  } catch (error) {
+    console.error('Error accessing the camera:', error);
+  }
+}
 
     async function loadModel() {
       model = await tf.loadLayersModel('model.json');
