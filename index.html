@@ -6,6 +6,7 @@
   <style>
     #video {
       width: 100%;
+      max-width: 640px; /* Максимальная ширина видео */
       height: auto;
       transform: scaleX(-1);
     }
@@ -20,11 +21,19 @@
       padding: 10px 20px;
       font-size: 16px;
     }
+
+    #capture-button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
   <h1>Image Recognition with Camera</h1>
   <button id="camera-button">Enable Camera</button>
+  <button id="capture-button" disabled>Capture Image</button>
   <video id="video" playsinline></video>
   <canvas id="canvas"></canvas>
 
@@ -32,10 +41,12 @@
     const videoElement = document.getElementById('video');
     const canvasElement = document.getElementById('canvas');
     const cameraButton = document.getElementById('camera-button');
+    const captureButton = document.getElementById('capture-button');
 
     let model;
     let stream;
     let videoWidth, videoHeight;
+    let captureImage = false;
 
     async function enableCamera() {
       try {
@@ -45,6 +56,7 @@
         videoWidth = videoElement.videoWidth;
         videoHeight = videoElement.videoHeight;
         cameraButton.disabled = true;
+        captureButton.disabled = false;
 
         await loadModel();
         classifyFrame();
@@ -57,19 +69,32 @@
       model = await tf.loadLayersModel('model.json');
     }
 
+    function captureImageFrame() {
+      captureImage = true;
+    }
+
     async function classifyFrame() {
       const context = canvasElement.getContext('2d');
-      context.drawImage(videoElement, 0, 0, videoWidth, videoHeight);
-      const image = tf.browser.fromPixels(canvasElement);
-      const predictions = await model.predict(image);
-      console.log('Predictions:', predictions);
+      context.drawImage(videoElement, 0, 0, videoWidth, videoHeight, 0, 0, canvasElement.width, canvasElement.height);
 
-      // Perform further processing or display predictions in the UI
+      if (captureImage) {
+        captureImage = false;
+
+        const image = tf.browser.fromPixels(canvasElement);
+        const resizedImage = tf.image.resizeBilinear(image, [model.inputs[0].shape[1], model.inputs[0].shape[2]]);
+        const processedImage = resizedImage.expandDims();
+        const predictions = await model.predict(processedImage).data();
+
+        console.log('Predictions:', predictions);
+
+        // Perform further processing or display predictions in the UI
+      }
 
       requestAnimationFrame(classifyFrame);
     }
 
     cameraButton.addEventListener('click', enableCamera);
+    captureButton.addEventListener('click', captureImageFrame);
   </script>
 </body>
 </html>
