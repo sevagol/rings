@@ -7,7 +7,7 @@
   <script>
     async function run() {
       // Загрузка модели TensorFlow.js
-      const model = await tf.loadLayersModel('./model.json');
+      const model = await tf.loadLayersModel('model.json');
 
       // Получение доступа к веб-камере
       const videoElement = document.getElementById('video');
