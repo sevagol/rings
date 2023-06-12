@@ -53,7 +53,7 @@
     const predictionText = document.getElementById('prediction-text');
 
     // Добавляем названия классов
-    const classes = ['Hello!', 'This is', 'Amazing!'];
+    const classes = ['class1', 'class2', 'class3'];
 
     let model;
     let stream;
@@ -106,8 +106,8 @@
 
         const maxPredictionIndex = predictions.indexOf(Math.max(...predictions));
 
-        // Выводим предсказания на экран
-        predictionText.textContent = ${classes[maxPredictionIndex]}`;
+        // Выводим только название класса на экран
+        predictionText.textContent = `Predicted class: ${classes[maxPredictionIndex]}`;
       }
 
       requestAnimationFrame(classifyFrame);
