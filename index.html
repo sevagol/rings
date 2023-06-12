@@ -78,12 +78,18 @@
       model = await tf.loadLayersModel('model.json');
     }
 
-    function captureImageFrame() {
+    // Изменяем имя функции для большей ясности
+    function captureAndClassifyImage() {
       captureImage = true;
     }
 
     async function classifyFrame() {
       const context = canvasElement.getContext('2d');
+
+      // Задаем размеры canvas, соответствующие размерам видео
+      canvasElement.width = videoWidth;
+      canvasElement.height = videoHeight;
+
       context.drawImage(videoElement, 0, 0, videoWidth, videoHeight, 0, 0, canvasElement.width, canvasElement.height);
 
       if (captureImage) {
@@ -101,16 +107,15 @@
           className: model.outputLayers[0].classes[i]
         })).sort((a, b) => b.probability - a.probability)[0];
 
-        predictionText.textContent = `Predicted class: ${topPrediction.className}`;
-
-        // Perform further processing or display predictions in the UI
+        // Выводим предсказания на экран
+        predictionText.textContent = `Predicted class: ${topPrediction.className} with probability of ${topPrediction.probability.toFixed(2)}`;
       }
 
       requestAnimationFrame(classifyFrame);
     }
 
     cameraButton.addEventListener('click', enableCamera);
-    captureButton.addEventListener('click', captureImageFrame);
+    captureButton.addEventListener('click', captureAndClassifyImage); // Изменяем имя функции на более подходящее
   </script>
 </body>
 </html>
