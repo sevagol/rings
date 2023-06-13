@@ -10,7 +10,7 @@ navigator.mediaDevices.getUserMedia({ video: true })
 var model, webcam, labelContainer, maxPredictions;
 
 async function init() {
-  const URL = 'https://teachablemachine.withgoogle.com/models/7B7BFIxNp/'; // Замените на URL вашей модели Teachable Machine
+  const URL = 'URL_МОДЕЛИ'; // Замените на URL вашей модели Teachable Machine
 
   model = await tmImage.load(URL + 'model.json');
   maxPredictions = model.getTotalClasses();
