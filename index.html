@@ -1,56 +1,100 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Webcam Image Classification</title>
+  <title>Image Recognition with Camera</title>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.9.0/dist/tf.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0/dist/mobilenet.min.js"></script>
+  <style>
+    #video {
+      width: 100%;
+      max-width: 640px; /* Максимальная ширина видео */
+      height: auto;
+      transform: scaleX(-1);
+    }
+
+    #canvas {
+      display: none;
+    }
+
+    #camera-button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+
+    #capture-button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Image Recognition with Camera</h1>
+  <button id="camera-button">Enable Camera</button>
+  <button id="capture-button" disabled>Capture Image</button>
+  <video id="video" playsinline></video>
+  <canvas id="canvas"></canvas>
+
   <script>
-    async function run() {
-      // Загрузка модели TensorFlow.js
-      const model = await tf.loadLayersModel('model.json');
+    const videoElement = document.getElementById('video');
+    const canvasElement = document.getElementById('canvas');
+    const cameraButton = document.getElementById('camera-button');
+    const captureButton = document.getElementById('capture-button');
 
-      // Получение доступа к веб-камере
-      const videoElement = document.getElementById('video');
-      const constraints = { video: true };
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      videoElement.srcObject = stream;
-      await videoElement.play();
+    let model;
+    let stream;
+    let videoWidth, videoHeight;
+    let captureImage = false;
 
-      // Создание Canvas элемента для отображения видеопотока и результатов классификации
-      const canvas = document.getElementById('canvas');
-      const context = canvas.getContext('2d');
-      canvas.width = videoElement.videoWidth;
-      canvas.height = videoElement.videoHeight;
+    async function enableCamera() {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        videoElement.srcObject = stream;
+        await videoElement.play();
+        videoWidth = videoElement.videoWidth;
+        videoHeight = videoElement.videoHeight;
+        cameraButton.disabled = true;
+        captureButton.disabled = false;
 
-      // Функция для классификации текущего кадра с помощью модели TensorFlow.js
-      async function classifyFrame() {
-        context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-        const image = tf.browser.fromPixels(canvas);
+        await loadModel();
+        classifyFrame();
+      } catch (error) {
+        console.error('Error accessing the camera:', error);
+      }
+    }
+
+    async function loadModel() {
+      model = await tf.loadLayersModel('model.json');
+    }
+
+    function captureImageFrame() {
+      captureImage = true;
+    }
+
+    async function classifyFrame() {
+      const context = canvasElement.getContext('2d');
+      context.drawImage(videoElement, 0, 0, videoWidth, videoHeight, 0, 0, canvasElement.width, canvasElement.height);
+
+      if (captureImage) {
+        captureImage = false;
+
+        const image = tf.browser.fromPixels(canvasElement);
         const resizedImage = tf.image.resizeBilinear(image, [model.inputs[0].shape[1], model.inputs[0].shape[2]]);
         const processedImage = resizedImage.expandDims();
         const predictions = await model.predict(processedImage).data();
-        const topPrediction = Array.from(predictions).map((p, i) => {
-          return {
-            probability: p,
-            className: model.outputLayers[0].classes[i]
-          };
-        }).sort((a, b) => b.probability - a.probability)[0];
 
-        console.log('Top Prediction:', topPrediction);
-        requestAnimationFrame(classifyFrame);
+        console.log('Predictions:', predictions);
+
+        // Perform further processing or display predictions in the UI
       }
 
-      // Запуск классификации кадров
-      classifyFrame();
+      requestAnimationFrame(classifyFrame);
     }
 
-    // Запуск приложения после полной загрузки страницы
-    document.addEventListener('DOMContentLoaded', run);
+    cameraButton.addEventListener('click', enableCamera);
+    captureButton.addEventListener('click', captureImageFrame);
   </script>
-</head>
-<body>
-  <h1>Webcam Image Classification</h1>
-  <video id="video" width="640" height="480" autoplay></video>
-  <canvas id="canvas"></canvas>
 </body>
 </html>
