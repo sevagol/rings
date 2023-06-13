@@ -5,15 +5,16 @@
   <title>Image Classification App</title>
   <style>
     #videoElement {
-      width: 400px;
-      height: 300px;
+      width: 100%;
+      max-width: 400px;
+      height: auto;
       background-color: #666;
     }
   </style>
 </head>
 <body>
   <h1>Image Classification App</h1>
-  <video autoplay="true" id="videoElement"></video>
+  <video autoplay="true" id="videoElement" playsinline></video>
   <canvas id="canvas" style="display: none;"></canvas>
   <h2 id="prediction"></h2>
 
