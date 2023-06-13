@@ -9,9 +9,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial Rounded MT', sans-serif;
             text-align: center;
-            background-color: #f5f5f5;
+            background-color: #007bff;
             margin: 0;
             padding: 0;
             display: flex;
@@ -29,23 +29,24 @@
         }
 
         button {
-            width: 60px;
-            height: 60px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
-            font-size: 16px;
+            font-size: 20px;
             cursor: pointer;
-            background-color: #6200ea;
+            background-color: #ff6600;
             color: #ffffff;
             border: none;
-            margin: 10px;
+            margin: 15px;
+            text-transform: uppercase;
         }
 
         button:disabled {
-            background-color: #bbb;
+            background-color: #bb5500;
         }
 
         button:hover:not(:disabled) {
-            background-color: #3700b3;
+            background-color: #cc5500;
         }
 
         #button-container {
