@@ -9,26 +9,26 @@
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <style>
         body {
-            font-family: 'Arial Rounded MT', sans-serif;
-            text-align: center;
-            background-color: #4B0082;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            height: 100vh;
-        }
+    font-family: 'Arial Rounded MT', sans-serif;
+    text-align: center;
+    background-color: #007bff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
 
-        #webcam {
-            border-radius: 50px;
-            width: 80%;
-            max-width: 400px;
-            margin-top: 20px;
-        }
+#webcam {
+    border-radius: 15px;
+    width: 60vw; /* ширина видео в зависимости от ширины экрана */
+    max-height: 60vh; /* максимальная высота видео в зависимости от высоты экрана */
+    margin-top: 20px;
+}
 
-      button {
+button {
     width: 80px;
     height: 80px;
     border-radius: 50%;
@@ -45,6 +45,9 @@
 }
 
 
+
+
+
         button:disabled {
             background-color: #bb5500;
         }
@@ -53,11 +56,10 @@
             background-color: #cc5500;
         }
 
-        #button-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
+       #button-container {
+    display: flex;
+    justify-content: center;
+}
     </style>
 </head>
 
