@@ -60,11 +60,16 @@ button {
     display: flex;
     justify-content: center;
 }
+ #logo {
+    width: 80px; /* Вы можете настроить размер логотипа */
+    margin-top: 20px; /* Добавьте отступ сверху, чтобы создать пространство между логотипом и верхним краем страницы */
+}
+
     </style>
 </head>
 
 <body>
-    <div>Camera Access Example</div>
+    <img src="logo.png" alt="Логотип" id="logo">
     <video id="webcam" playsInline autoplay></video>
     <div id="button-container">
         <button type="button" onclick="init()" id="start-button">Start</button>
