@@ -8,10 +8,13 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <style>
-        body {
+    body {
     font-family: 'Arial Rounded MT', sans-serif;
     text-align: center;
-    background-color: #4B0082;
+    background-image: url('background.jpg');
+    background-size: cover; /* Масштабирует фоновое изображение, чтобы его размер соответствовал размерам элемента */
+    background-position: center; /* Центрирует фоновое изображение */
+    background-repeat: no-repeat; /* Убирает повторение фонового изображения */
     margin: 0;
     padding: 0;
     display: flex;
@@ -21,12 +24,15 @@
     height: 100vh;
 }
 
+
 #webcam {
-    border-radius: 15px;
+    border-radius: 50%; /* Делает рамку камеры круглой */
     width: 60vw; /* ширина видео в зависимости от ширины экрана */
     max-height: 60vh; /* максимальная высота видео в зависимости от высоты экрана */
     margin-top: 20px;
+    object-fit: cover; /* Это свойство гарантирует, что аспектное соотношение видео сохраняется, даже если его форма круглая */
 }
+
 
 button {
     width: 80px;
