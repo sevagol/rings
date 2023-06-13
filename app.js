@@ -1,45 +1,56 @@
-navigator.mediaDevices.getUserMedia({ video: true })
-  .then(function (stream) {
-    var video = document.getElementById('videoElement');
-    video.srcObject = stream;
-  })
-  .catch(function (err) {
-    console.log("An error occurred: " + err);
-  });
-
-var model, webcam, labelContainer, maxPredictions;
+let model, webcam, labelContainer, maxPredictions;
+let isFrontCamera = true;
 
 async function init() {
-  const URL = 'URL_МОДЕЛИ'; // Замените на URL вашей модели Teachable Machine
+  const URL = 'https://teachablemachine.withgoogle.com/models/7B7BFIxNp/'; // Замените на URL вашей модели Teachable Machine
 
   model = await tmImage.load(URL + 'model.json');
   maxPredictions = model.getTotalClasses();
 
-  const flip = true; // Флип изображения (true для большинства камер, false для некоторых)
-  webcam = new tmImage.Webcam(400, 300, flip);
-  await webcam.setup();
-  await webcam.play();
-  window.requestAnimationFrame(loop);
+  await setupCamera();
+  document.getElementById('videoElement').srcObject = webcam.stream;
 
-  document.getElementById('videoElement').appendChild(webcam.canvas);
   labelContainer = document.getElementById('prediction');
-  for (let i = 0; i < maxPredictions; i++) {
-    labelContainer.appendChild(document.createElement('div'));
+}
+
+async function setupCamera() {
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const videoDevices = devices.filter(device => device.kind === 'videoinput');
+
+    let deviceId;
+    if (isFrontCamera) {
+      deviceId = videoDevices.find(device => device.label.toLowerCase().includes('front'))?.deviceId;
+    } else {
+      deviceId = videoDevices.find(device => device.label.toLowerCase().includes('back'))?.deviceId;
+    }
+
+    const constraints = {
+      video: { deviceId: { exact: deviceId } }
+    };
+
+    webcam = await tmImage.createWebcam(400, 300, constraints);
+    await webcam.setup();
+    await webcam.play();
   }
 }
 
-async function loop() {
-  webcam.update();
-  await predict();
-  window.requestAnimationFrame(loop);
+async function switchCamera() {
+  isFrontCamera = !isFrontCamera;
+  await webcam.stop();
+  await setupCamera();
+  document.getElementById('videoElement').srcObject = webcam.stream;
 }
 
 async function predict() {
   const prediction = await model.predict(webcam.canvas);
+  labelContainer.innerHTML = '';
   for (let i = 0; i < maxPredictions; i++) {
     const classPrediction =
       prediction[i].className + ': ' + prediction[i].probability.toFixed(2);
-    labelContainer.childNodes[i].innerHTML = classPrediction;
+    const predictionElement = document.createElement('div');
+    predictionElement.innerText = classPrediction;
+    labelContainer.appendChild(predictionElement);
   }
 }
 
