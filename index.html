@@ -15,47 +15,47 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <script type="text/javascript">
-        // More API functions here:
-        // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
-
-        // The link to your model provided by Teachable Machine export panel
         const URL = "https://teachablemachine.withgoogle.com/models/WaLVe2r0w/";
 
         let model, webcam, labelContainer, maxPredictions;
 
-        // Load the image model and setup the webcam
         async function init() {
             const modelURL = URL + "model.json";
             const metadataURL = URL + "metadata.json";
 
-            // Load the model and metadata
             model = await tmImage.load(modelURL, metadataURL);
             maxPredictions = model.getTotalClasses();
 
-            // Convenience function to setup a webcam
-            const flip = isMobile() ? false : true; // Flip the webcam only if not on mobile
-            webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
-            await webcam.setup(); // Request access to the webcam
+            // Создайте элемент видео с атрибутами playsInline и autoplay
+            const videoElement = document.createElement('video');
+            videoElement.setAttribute('playsInline', '');
+            videoElement.setAttribute('autoplay', '');
+
+            // Используйте созданный элемент видео при инициализации веб-камеры
+            const flip = isMobile() ? false : true;
+            if (isMobile()) {
+                webcam = new tmImage.Webcam(200, 200, flip, { facingMode: "environment" }, videoElement);
+            } else {
+                webcam = new tmImage.Webcam(200, 200, flip, {}, videoElement);
+            }
+            await webcam.setup();
             await webcam.play();
             window.requestAnimationFrame(loop);
 
-            // Append elements to the DOM
             document.getElementById("webcam-container").appendChild(webcam.canvas);
             labelContainer = document.getElementById("label-container");
-            for (let i = 0; i < maxPredictions; i++) { // And class labels
+            for (let i = 0; i < maxPredictions; i++) {
                 labelContainer.appendChild(document.createElement("div"));
             }
         }
 
         async function loop() {
-            webcam.update(); // Update the webcam frame
+            webcam.update();
             await predict();
             window.requestAnimationFrame(loop);
         }
 
-        // Run the webcam image through the image model
         async function predict() {
-            // Predict can take in an image, video or canvas HTML element
             const prediction = await model.predict(webcam.canvas);
             for (let i = 0; i < maxPredictions; i++) {
                 const classPrediction =
@@ -64,7 +64,6 @@
             }
         }
 
-        // Detect if the device is mobile
         function isMobile() {
             return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         }
