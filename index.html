@@ -14,9 +14,10 @@
 </head>
 <body>
   <h1>Image Classification App</h1>
-  <video autoplay="true" id="videoElement" playsinline></video>
+  <video id="videoElement" autoplay></video>
   <canvas id="canvas" style="display: none;"></canvas>
-  <button onclick="predict()">Предсказать</button>
+  <button onclick="switchCamera()">Switch Camera</button>
+  <button onclick="predict()">Predict</button>
   <div id="prediction"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.9.0/dist/tf.min.js"></script>
