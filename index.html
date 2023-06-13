@@ -16,15 +16,13 @@
         model = await tmImage.load(modelURL, metadataURL);
         maxPredictions = model.getTotalClasses();
 
-        const webcamConfig = {
-            width: 200,
-            height: 200,
-            facingMode: "environment" // для задней камеры
-        };
-
-        webcam = new tmImage.Webcam(webcamConfig.width, webcamConfig.height, webcamConfig.facingMode); // передача конфигурации в качестве аргументов
-
-        await webcam.setup(); 
+        const flip = false; // no need to flip the webcam for rear camera
+        webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
+        
+        // Specify to use the rear camera on mobile devices
+        webcam.webcam.constraints = { ...webcam.webcam.constraints, facingMode: "environment" };
+        
+        await webcam.setup(); // request access to the webcam
         await webcam.play();
         window.requestAnimationFrame(loop);
 
@@ -36,7 +34,7 @@
     }
 
     async function loop() {
-        webcam.update(); 
+        webcam.update();
         await predict();
         window.requestAnimationFrame(loop);
     }
