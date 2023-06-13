@@ -1,55 +1,24 @@
-<div>Teachable Machine Image Model</div>
-<button type="button" onclick="init()">Start</button>
-<div id="webcam-container"></div>
-<div id="label-container"></div>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-<script type="text/javascript">
-    const URL = "https://teachablemachine.withgoogle.com/models/7B7BFIxNp/";
-
-    let model, webcam, labelContainer, maxPredictions;
-
-    async function init() {
-        const modelURL = URL + "model.json";
-        const metadataURL = URL + "metadata.json";
-
-        model = await tmImage.load(modelURL, metadataURL);
-        maxPredictions = model.getTotalClasses();
-
-        // Custom constraints for rear camera
-        const customConfig = {
-            video: {
-                width: 200,
-                height: 200,
-                facingMode: 'environment',
-            },
-        };
-        
-        // Create the webcam instance with custom constraints
-        webcam = new tmImage.Webcam(customConfig.video.width, customConfig.video.height);
-        await webcam.setup(customConfig); // Request access to the webcam with custom constraints
-        await webcam.play();
-        window.requestAnimationFrame(loop);
-
-        document.getElementById("webcam-container").appendChild(webcam.canvas);
-        labelContainer = document.getElementById("label-container");
-        for (let i = 0; i < maxPredictions; i++) {
-            labelContainer.appendChild(document.createElement("div"));
-        }
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Image Classification App</title>
+  <style>
+    #videoElement {
+      width: 400px;
+      height: 300px;
+      background-color: #666;
     }
+  </style>
+</head>
+<body>
+  <h1>Image Classification App</h1>
+  <video autoplay="true" id="videoElement"></video>
+  <canvas id="canvas" style="display: none;"></canvas>
+  <h2 id="prediction"></h2>
 
-    async function loop() {
-        webcam.update();
-        await predict();
-        window.requestAnimationFrame(loop);
-    }
-
-    async function predict() {
-        const prediction = await model.predict(webcam.canvas);
-        for (let i = 0; i < maxPredictions; i++) {
-            const classPrediction =
-                prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-            labelContainer.childNodes[i].innerHTML = classPrediction;
-        }
-    }
-</script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.9.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/teachablemachine-automl@0.10.0/dist/teachablemachine-automl.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
