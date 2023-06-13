@@ -16,13 +16,18 @@
         model = await tmImage.load(modelURL, metadataURL);
         maxPredictions = model.getTotalClasses();
 
-        const flip = false; // no need to flip the webcam for rear camera
-        webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
+        // Custom constraints for rear camera
+        const customConfig = {
+            video: {
+                width: 200,
+                height: 200,
+                facingMode: 'environment',
+            },
+        };
         
-        // Specify to use the rear camera on mobile devices
-        webcam.webcam.constraints = { ...webcam.webcam.constraints, facingMode: "environment" };
-        
-        await webcam.setup(); // request access to the webcam
+        // Create the webcam instance with custom constraints
+        webcam = new tmImage.Webcam(customConfig.video.width, customConfig.video.height);
+        await webcam.setup(customConfig); // Request access to the webcam with custom constraints
         await webcam.play();
         window.requestAnimationFrame(loop);
 
