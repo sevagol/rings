@@ -8,6 +8,14 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <style>
+    @keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
     body {
     font-family: 'Arial Rounded MT', sans-serif;
     text-align: center;
@@ -70,6 +78,7 @@ button {
  #logo {
     width: 120px; /* Вы можете настроить размер логотипа */
     margin-top: 5px; /* Добавьте отступ сверху, чтобы создать пространство между логотипом и верхним краем страницы */
+     animation: fade-in 2s ease-in-out;
 }
 
     </style>
