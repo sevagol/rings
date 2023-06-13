@@ -1,55 +1,56 @@
-<div>Teachable Machine Image Model</div>
-<button type='button' onclick='init()'>Start</button>
-<div id='webcam-container'></div>
-<div id='label-container'></div>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
-<script src="../dist/teachablemachine-image.min.js"></script>
-<script type="text/javascript">
-    // the link to your model provided by Teachable Machine export panel
-    const URL = 'https://teachablemachine.withgoogle.com/models/7B7BFIxNp/';
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Webcam Image Classification</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.9.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0/dist/mobilenet.min.js"></script>
+  <script>
+    async function run() {
+      // Загрузка модели TensorFlow.js
+      const model = await tf.loadLayersModel('model.json');
 
-    let model, webcam, labelContainer, maxPredictions;
+      // Получение доступа к веб-камере
+      const videoElement = document.getElementById('video');
+      const constraints = { video: true };
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      videoElement.srcObject = stream;
+      await videoElement.play();
 
-    // Load the image model and setup the webcam
-    async function init() {
-        const modelURL = URL + 'model.json';
-        const metadataURL = URL + 'metadata.json';
+      // Создание Canvas элемента для отображения видеопотока и результатов классификации
+      const canvas = document.getElementById('canvas');
+      const context = canvas.getContext('2d');
+      canvas.width = videoElement.videoWidth;
+      canvas.height = videoElement.videoHeight;
 
-        // load the model and metadata
-        // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
-        // or files from your local hard drive
-        model = await tmImage.load(modelURL, metadataURL);
-        maxPredictions = model.getTotalClasses();
+      // Функция для классификации текущего кадра с помощью модели TensorFlow.js
+      async function classifyFrame() {
+        context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+        const image = tf.browser.fromPixels(canvas);
+        const resizedImage = tf.image.resizeBilinear(image, [model.inputs[0].shape[1], model.inputs[0].shape[2]]);
+        const processedImage = resizedImage.expandDims();
+        const predictions = await model.predict(processedImage).data();
+        const topPrediction = Array.from(predictions).map((p, i) => {
+          return {
+            probability: p,
+            className: model.outputLayers[0].classes[i]
+          };
+        }).sort((a, b) => b.probability - a.probability)[0];
 
-        // Convenience function to setup a webcam
-        const flip = true; // whether to flip the webcam
-        webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
-        await webcam.setup(); // request access to the webcam
-        webcam.play();
-        window.requestAnimationFrame(loop);
+        console.log('Top Prediction:', topPrediction);
+        requestAnimationFrame(classifyFrame);
+      }
 
-        // append elements to the DOM
-        document.getElementById('webcam-container').appendChild(webcam.canvas);
-        labelContainer = document.getElementById('label-container');
-        for (let i = 0; i < maxPredictions; i++) { // and class labels
-            labelContainer.appendChild(document.createElement('div'));
-        }
+      // Запуск классификации кадров
+      classifyFrame();
     }
 
-    async function loop() {
-        webcam.update(); // update the webcam frame
-        await predict();
-        window.requestAnimationFrame(loop);
-    }
-
-    // run the webcam image through the image model
-    async function predict() {
-        // predict can take in an image, video or canvas html element
-        const prediction = await model.predict(webcam.canvas);
-        for (let i = 0; i < maxPredictions; i++) {
-            const classPrediction =
-                prediction[i].className + ': ' + prediction[i].probability.toFixed(2);
-            labelContainer.childNodes[i].innerHTML = classPrediction;
-        }
-    }
-</script>
+    // Запуск приложения после полной загрузки страницы
+    document.addEventListener('DOMContentLoaded', run);
+  </script>
+</head>
+<body>
+  <h1>Webcam Image Classification</h1>
+  <video id="video" width="640" height="480" autoplay></video>
+  <canvas id="canvas"></canvas>
+</body>
+</html>
