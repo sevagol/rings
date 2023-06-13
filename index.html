@@ -8,9 +8,38 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
         #webcam {
-            width: 150px; /* Ширина видео */
-            height: auto; /* Высота автоматически подстраивается */
+            border-radius: 15px; /* Закругленные углы */
+            width: 80%; /* Ширина видео */
+            max-width: 400px; /* Максимальная ширина */
+            margin-top: 20px;
+        }
+
+        #label-container {
+            margin-top: 20px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #6200ea;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #3700b3;
         }
     </style>
 </head>
