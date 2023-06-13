@@ -28,10 +28,6 @@
             margin-top: 20px;
         }
 
-        #label-container {
-            margin-top: 20px;
-        }
-
         button {
             width: 60px;
             height: 60px;
@@ -63,7 +59,6 @@
 <body>
     <div>Camera Access Example</div>
     <video id="webcam" playsInline autoplay></video>
-    <div id="label-container"></div>
     <div id="button-container">
         <button type="button" onclick="init()" id="start-button">Start</button>
         <button type="button" onclick="scan()" id="scan-button" disabled>Scan</button>
@@ -71,6 +66,7 @@
     <script type="text/javascript">
         const URL = "https://teachablemachine.withgoogle.com/models/WaLVe2r0w/";
         let model, maxPredictions;
+        const classNames = ["This is", "Hello!", "Awesome!"];
 
         async function init() {
             try {
@@ -95,15 +91,7 @@
             try {
                 const video = document.getElementById("webcam");
                 if (video.readyState === video.HAVE_ENOUGH_DATA) {
-                    const prediction = await model.predict(video);
-                    const labelContainer = document.getElementById("label-container");
-                    labelContainer.innerHTML = '';
-                    for (let i = 0; i < maxPredictions; i++) {
-                        const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-                        const labelElement = document.createElement("div");
-                        labelElement.innerHTML = classPrediction;
-                        labelContainer.appendChild(labelElement);
-                    }
+                    await model.predict(video);
                 }
                 window.requestAnimationFrame(predict);
             } catch (error) {
@@ -113,17 +101,16 @@
         }
 
         async function scan() {
-            const labelContainer = document.getElementById("label-container");
             const predictions = await model.predict(document.getElementById("webcam"));
             let max = 0;
             let maxClass = "";
             for (let i = 0; i < predictions.length; i++) {
                 if (predictions[i].probability > max) {
                     max = predictions[i].probability;
-                    maxClass = predictions[i].className;
+                    maxClass = classNames[i];
                 }
             }
-            alert("Наиболее вероятный класс: " + maxClass);
+            alert(maxClass);
         }
     </script>
 </body>
