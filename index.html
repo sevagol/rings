@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Camera Access</title>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 </head>
 
 <body>
@@ -18,41 +19,51 @@
         let model, maxPredictions;
 
         async function init() {
-            const modelURL = URL + "model.json";
-            const metadataURL = URL + "metadata.json";
+            try {
+                const modelURL = URL + "model.json";
+                const metadataURL = URL + "metadata.json";
 
-            // Загрузка модели
-            model = await tmImage.load(modelURL, metadataURL);
-            maxPredictions = model.getTotalClasses();
+                // Загрузка модели
+                model = await tmImage.load(modelURL, metadataURL);
+                maxPredictions = model.getTotalClasses();
 
-            // Запрашиваем доступ к камере
-            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
-            document.getElementById("webcam").srcObject = stream;
+                // Запрашиваем доступ к камере
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+                document.getElementById("webcam").srcObject = stream;
 
-            // Начинаем предсказание
-            window.requestAnimationFrame(predict);
+                // Начинаем предсказание
+                window.requestAnimationFrame(predict);
+            } catch (error) {
+                console.error("Ошибка при инициализации:", error);
+                alert("Ошибка при инициализации: " + error);
+            }
         }
 
         async function predict() {
-            const video = document.getElementById("webcam");
-            if (video.readyState === video.HAVE_ENOUGH_DATA) {
-                const prediction = await model.predict(video);
-                const labelContainer = document.getElementById("label-container");
+            try {
+                const video = document.getElementById("webcam");
+                if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                    const prediction = await model.predict(video);
+                    const labelContainer = document.getElementById("label-container");
 
-                // Очистка контейнера
-                labelContainer.innerHTML = '';
+                    // Очистка контейнера
+                    labelContainer.innerHTML = '';
 
-                for (let i = 0; i < maxPredictions; i++) {
-                    const classPrediction =
-                        prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-                    const labelElement = document.createElement("div");
-                    labelElement.innerHTML = classPrediction;
-                    labelContainer.appendChild(labelElement);
+                    for (let i = 0; i < maxPredictions; i++) {
+                        const classPrediction =
+                            prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+                        const labelElement = document.createElement("div");
+                        labelElement.innerHTML = classPrediction;
+                        labelContainer.appendChild(labelElement);
+                    }
                 }
-            }
 
-            // Продолжаем предсказание
-            window.requestAnimationFrame(predict);
+                // Продолжаем предсказание
+                window.requestAnimationFrame(predict);
+            } catch (error) {
+                console.error("Ошибка при предсказании:", error);
+                alert("Ошибка при предсказании: " + error);
+            }
         }
     </script>
 </body>
