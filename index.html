@@ -16,7 +16,8 @@
   <h1>Image Classification App</h1>
   <video autoplay="true" id="videoElement" playsinline></video>
   <canvas id="canvas" style="display: none;"></canvas>
-  <h2 id="prediction"></h2>
+  <button onclick="predict()">Предсказать</button>
+  <div id="prediction"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.9.0/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/teachablemachine-automl@0.10.0/dist/teachablemachine-automl.min.js"></script>
