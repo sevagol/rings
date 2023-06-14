@@ -7,85 +7,77 @@
     <title>Camera Access</title>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-    <style>
-    @keyframes fade-in {
-    from {
+   <style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background: #0e2f56 url('background.jpg') no-repeat center center fixed;
+        background-size: cover;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    #webcam-container {
+        border-radius: 50%;
+        margin-top: 2em;
+        overflow: hidden;
+    }
+    #label-container {
+        margin-top: 2em;
+        font-size: 2em;
+        color: white;
+    }
+    button {
+        width: 60px;
+        height: 60px;
+        border: none;
+        border-radius: 50%;
+        color: white;
+        font-size: 14px;
+        text-align: center;
+        font-weight: bold;
+        margin: 1em;
+        background-color: orange;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        text-transform: uppercase;
+        font-family: 'Arial Rounded MT Bold', sans-serif;
+    }
+    #logo {
+        width: 50px;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        animation: move-to-center 3s forwards, rotate-and-scale 2s 3s forwards;
         opacity: 0;
+        transition: opacity 2s;
     }
-    to {
-        opacity: 1;
+    @keyframes move-to-center {
+        100% {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
     }
-}
-    body {
-    font-family: 'Arial Rounded MT', sans-serif;
-    text-align: center;
-    background-image: url('background.jpg');
-    background-size: cover; /* Масштабирует фоновое изображение, чтобы его размер соответствовал размерам элемента */
-    background-position: center; /* Центрирует фоновое изображение */
-    background-repeat: no-repeat; /* Убирает повторение фонового изображения */
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-}
-
-
-#webcam {
-    border-radius: 50%; /* Делает рамку камеры круглой */
-    width: 60vmin; /* ширина и высота видео равны 60% от меньшей стороны экрана */
-    height: 60vmin;
-    margin-top: 20px;
-    object-fit: cover; /* Это свойство гарантирует, что аспектное соотношение видео сохраняется, даже если его форма круглая */
-}
-
-
-
-button {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    font-size: 20px;
-    cursor: pointer;
-    background-color: #ff6600;
-    color: #ffffff;
-    border: none;
-    margin: 15px;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-
-
-
-
-        button:disabled {
-            background-color: #bb5500;
+    @keyframes rotate-and-scale {
+        0% {
+            transform: rotate(0) scale(1);
         }
-
-        button:hover:not(:disabled) {
-            background-color: #cc5500;
+        100% {
+            transform: rotate(360deg) scale(30);
         }
+    }
+</style>
 
-       #button-container {
-    display: flex;
-    justify-content: center;
-}
- #logo {
-    width: 120px; /* Вы можете настроить размер логотипа */
-    margin-top: 5px; /* Добавьте отступ сверху, чтобы создать пространство между логотипом и верхним краем страницы */
-     animation: fade-in 2s ease-in-out;
-}
-
-    </style>
 </head>
 
 <body>
-    <img src="photo_2023-06-12_23-39-04-removebg-preview (1).png" alt="Логотип" id="logo">
+    <img src="photo_2023-06-12_23-39-04-removebg-preview (1).png" alt="Логотип" id="logo" onload="this.style.opacity='1'";>
     <video id="webcam" playsInline autoplay></video>
     <div id="button-container">
         <button type="button" onclick="init()" id="start-button">Start</button>
