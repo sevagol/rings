@@ -44,23 +44,39 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    animation: combined-animation 4s ease-in-out forwards;
+    animation: rotate-scale 4s 2s ease-in-out forwards;
 }
 
-@keyframes combined-animation {
-    0% {
+#logo::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url("photo_2023-06-12_23-39-04-removebg-preview (1).png") no-repeat center/contain;
+    opacity: 0;
+    animation: fade-in 2s ease-in-out forwards;
+}
+
+@keyframes fade-in {
+    from {
         opacity: 0;
-        transform: translate(-50%, -50%) scale(1);
     }
-    50% {
+    to {
         opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-    }
-    100% {
-        opacity: 1;
-        transform: translate(-50%, -50%) rotate(360deg) scale(1.5);
     }
 }
+
+@keyframes rotate-scale {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg) scale(1.5); /* Увеличение в 1.5 раза и вращение на 360 градусов */
+    }
+}
+
 
 button {
     width: 80px;
