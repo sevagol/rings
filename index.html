@@ -24,13 +24,6 @@ body {
     height: 100vh;
 }
 
-#camera-container {
-    position: relative;
-    width: 60vmin;
-    height: 60vmin;
-    margin-top: 20px;
-}
-
 #webcam {
     border-radius: 50%;
     width: 100%;
@@ -38,13 +31,20 @@ body {
     object-fit: cover;
 }
 
+#camera-container {
+    position: relative;
+    width: 60vmin;
+    height: 60vmin;
+    margin-top: -30px; /* Отрицательный отступ сверху */
+}
+
 #logo {
     position: absolute;
     width: 80px;
-    top: 50%; /* Позиционирование по вертикали по центру */
-    left: 50%; /* Позиционирование по горизонтали по центру */
-    transform: translate(-50%, -50%); /* Смещение, чтобы центр логотипа был точно по центру круга */
-    animation: fade-in 2s ease-in-out;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: fade-in 2s ease-in-out, rotate-scale 2s 2s ease-in-out forwards;
 }
 
 @keyframes fade-in {
@@ -55,6 +55,16 @@ body {
         opacity: 1;
     }
 }
+
+@keyframes rotate-scale {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg) scale(1.5); /* Увеличение в 1.5 раза и вращение на 360 градусов */
+    }
+}
+
 
 
 button {
