@@ -8,70 +8,66 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
    <style>
-    body, html {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        background: #0e2f56 url('your-background-image.jpg') no-repeat center center fixed;
-        background-size: cover;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-    #webcam-container {
-        border-radius: 50%;
-        margin-top: 2em;
-        overflow: hidden;
-    }
-    #label-container {
-        margin-top: 2em;
-        font-size: 2em;
-        color: white;
-    }
-    button {
-        width: 60px;
-        height: 60px;
-        border: none;
-        border-radius: 50%;
-        color: white;
-        font-size: 14px;
-        text-align: center;
-        font-weight: bold;
-        margin: 1em;
-        background-color: orange;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        text-transform: uppercase;
-        font-family: 'Arial Rounded MT Bold', sans-serif;
-    }
-    #logo {
-        width: 50px;
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        animation: move-to-center 3s forwards, rotate-and-scale 2s 3s forwards;
+    @keyframes fade-in {
+    from {
         opacity: 0;
-        transition: opacity 2s;
     }
-    @keyframes move-to-center {
-        100% {
-            top: 20%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
+    to {
+        opacity: 1;
     }
-    @keyframes rotate-and-scale {
-        0% {
-            transform: rotate(0) scale(1);
-        }
-        100% {
-            transform: rotate(360deg) scale(2); /* можно изменить масштаб, например, на 10 */
-        }
-    }
+}
+
+body {
+    font-family: 'Arial Rounded MT', sans-serif;
+    text-align: center;
+    background-image: url('background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+#logo {
+    width: 80px;
+    margin-top: 20px;
+    animation: fade-in 2s ease-in-out;
+}
+
+#webcam {
+    border-radius: 50%;
+    width: 60vmin;
+    height: 60vmin;
+    margin-top: 20px;
+    object-fit: cover;
+}
+
+button {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #ff6600;
+    color: #ffffff;
+    border: none;
+    margin: 15px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#button-container {
+    display: flex;
+    justify-content: center;
+}
+
 </style>
 
 
