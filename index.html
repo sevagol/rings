@@ -8,15 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
    <style>
-    @keyframes fade-in {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
 body {
     font-family: 'Arial Rounded MT', sans-serif;
     text-align: center;
@@ -33,19 +24,38 @@ body {
     height: 100vh;
 }
 
-#logo {
-    width: 80px;
+#camera-container {
+    position: relative;
+    width: 60vmin;
+    height: 60vmin;
     margin-top: 20px;
-    animation: fade-in 2s ease-in-out;
 }
 
 #webcam {
     border-radius: 50%;
-    width: 60vmin;
-    height: 60vmin;
-    margin-top: 20px;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
 }
+
+#logo {
+    position: absolute;
+    width: 80px;
+    top: 50%; /* Позиционирование по вертикали по центру */
+    left: 50%; /* Позиционирование по горизонтали по центру */
+    transform: translate(-50%, -50%); /* Смещение, чтобы центр логотипа был точно по центру круга */
+    animation: fade-in 2s ease-in-out;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
 
 button {
     width: 80px;
@@ -74,8 +84,12 @@ button {
 </head>
 
 <body>
-    <img src="photo_2023-06-12_23-39-04-removebg-preview (1).png" alt="Логотип" id="logo" onload="this.style.opacity='1'";>
-    <video id="webcam" playsInline autoplay></video>
+    <!-- <img src="photo_2023-06-12_23-39-04-removebg-preview (1).png" alt="Логотип" id="logo" onload="this.style.opacity='1'";> -->
+    <div id="camera-container">
+    <video autoplay="true" id="webcam" playsinline></video>
+    <img src="photo_2023-06-12_23-39-04-removebg-preview (1).png" alt="logo" id="logo">
+</div>
+
     <div id="button-container">
         <button type="button" onclick="init()" id="start-button">Start</button>
         <button type="button" onclick="scan()" id="scan-button" disabled>Scan</button>
