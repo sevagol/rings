@@ -92,47 +92,56 @@ button {
         <button type="button" onclick="scan()" id="scan-button" disabled>Scan</button>
     </div>
   <script type="text/javascript">
-    const URL = "https://teachablemachine.withgoogle.com/models/WaLVe2r0w/";
-    let model, webcam, labelContainer, maxPredictions;
+        const URL = "https://teachablemachine.withgoogle.com/models/WaLVe2r0w/";
+        let model, maxPredictions;
+        const classNames = ["This is", "Hello!", "Awesome!"];
 
-    async function init() {
-        const modelURL = URL + "model.json";
-        const metadataURL = URL + "metadata.json";
+        async function init() {
+            try {
+                const modelURL = URL + "model.json";
+                const metadataURL = URL + "metadata.json";
 
-        model = await tmImage.load(modelURL, metadataURL);
-        maxPredictions = model.getTotalClasses();
+                model = await tmImage.load(modelURL, metadataURL);
+                maxPredictions = model.getTotalClasses();
 
-        const flip = true;
-        webcam = new tmImage.Webcam(200, 200, flip);
-        await webcam.setup();
-        await webcam.play();
-        window.requestAnimationFrame(loop);
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
+                document.getElementById("webcam").srcObject = stream;
 
-        document.getElementById("webcam-container").appendChild(webcam.canvas);
-        labelContainer = document.getElementById("label-container");
-    }
-
-    async function loop() {
-        webcam.update();
-        window.requestAnimationFrame(loop);
-    }
-
-    async function scan() {
-        const prediction = await model.predict(webcam.canvas);
-        let highestProbability = -1;
-        let highestClass = null;
-        for (let i = 0; i < maxPredictions; i++) {
-            if (prediction[i].probability > highestProbability) {
-                highestProbability = prediction[i].probability;
-                highestClass = prediction[i].className;
+                document.getElementById("scan-button").disabled = false;
+                window.requestAnimationFrame(predict);
+            } catch (error) {
+                console.error("Ошибка при инициализации:", error);
+                alert("Ошибка при инициализации: " + error);
             }
         }
-        let className = highestClass === "class1" ? "This is" :
-                        highestClass === "class2" ? "Hello!" :
-                        highestClass === "class3" ? "Awesome!" : "Unknown";
-        labelContainer.innerHTML = className;
-    }
-</script>
+
+        async function predict() {
+            try {
+                const video = document.getElementById("webcam");
+                if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                    await model.predict(video);
+                }
+                window.requestAnimationFrame(predict);
+            } catch (error) {
+                console.error("Ошибка при предсказании:", error);
+                alert("Ошибка при предсказании: " + error);
+            }
+        }
+
+        async function scan() {
+            const predictions = await model.predict(document.getElementById("webcam"));
+            let max = 0;
+            let maxClass = "";
+            for (let i = 0; i < predictions.length; i++) {
+                if (predictions[i].probability > max) {
+                    max = predictions[i].probability;
+                    maxClass = classNames[i];
+                }
+            }
+            alert("Наиболее вероятный класс: " + maxClass);
+        }
+    </script>
+
 
 </body>
 
